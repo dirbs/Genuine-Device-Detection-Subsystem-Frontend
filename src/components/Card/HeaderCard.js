@@ -22,102 +22,106 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON A
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import React from "react";
-import { Card, CardHeader, Col } from "reactstrap";
-const HeaderCard = ({ headerData, titleText, bgColor }) => {
-  const style = {
-    fontSize: "14px",
-    display: "block",
-    fontFamily: "Aileron",
-    textAlign: "center",
-    color: "white",
-    fontWeight: "450",
-  };
-  return (
-    <Col xl={3} lg={3} md={4} sm={6}>
-      <Card style={{ backgroundColor: bgColor }}>
-        <CardHeader
-          style={{
-            height: "18vh",
-            padding: "15px",
-            textAlign: "center",
-            outline: "none",
-          }}
-        >
-          <b className="text text-white"> {titleText && titleText} </b>
-          {Object.keys(headerData).includes("duplication_list_Stats") &&
-            Object.keys(headerData).map((data) =>
-              Object.keys(headerData[data]).map(
-                (item) =>
-                  (item === "total_imeis" && (
-                    <span key={item} style={style}>
-                      Total IMEIS : {headerData[data][item]}
-                    </span>
-                  )) ||
-                  (item === "pending_imeis" && (
-                    <span key={item} style={style}>
-                      Pending IMEIS : {headerData[data][item]}
-                    </span>
-                  ))
-              )
-            )}
-          {Object.keys(headerData).includes("user_summary") &&
-            Object.keys(headerData).map((data) =>
-              Object.keys(headerData[data]).map(
-                (item) =>
-                  (item === "pending_imeis" && (
-                    <span key={item} style={style}>
-                      Total IMEIS : {headerData[data][item]}
-                    </span>
-                  )) ||
-                  (item === "responded_imeis" && (
-                    <span key={item} style={style}>
-                      Pending IMEIS : {headerData[data][item]}
-                    </span>
-                  ))
-              )
-            )}
-          {Object.keys(headerData).includes(
-            "gsma_brands_detail" || "oem_logins_detail"
-          ) &&
-            Object.keys(headerData).map((data) =>
-              Object.keys(headerData[data]).map(
-                (item) =>
-                  (item === "total_oems" && (
-                    <span key={item} style={style}>
-                      Total OEMS : {headerData[data][item]}
-                    </span>
-                  )) ||
-                  (item === "approved_oems" && (
-                    <span key={item} style={style}>
-                      Approved OEMS : {headerData[data][item]}
-                    </span>
-                  )) ||
-                  (item === "pending_oems" && (
-                    <span key={item} style={style}>
-                      Pending OEMS : {headerData[data][item]}
-                    </span>
-                  ))
-              )
-            )}
-          {Array.isArray(headerData) && headerData && (
-            <span style={style}>
-              No of OEM
-              <span
-                style={{
-                  fontSize: "20px",
-                  textAlign: "center",
-                  display: "block",
-                }}
-              >
-                {headerData.length}
-              </span>
-            </span>
-          )}
-        </CardHeader>
-      </Card>
-    </Col>
-  );
-};
+import React, { Component } from "react";
+import { Col, Table, Row } from "reactstrap";
+import { Link } from "react-router-dom";
+import { PointSpreadLoading } from "react-loadingg";
+class SummaryDataTable extends Component {
+  render() {
+    const { tableData, title } = this.props;
+    return (
+      <Col xs={12} xl={6} className="order-xl-1">
+        {Array.isArray(tableData) ? (
+          tableData == 0 ? (
+            <Row className="d-flex justify-content-center">
+              <PointSpreadLoading
+                color="#0093c9"
+                speed={1}
+                style={{ width: "0px !important" }}
+              />
+            </Row>
+          ) : (
+            <Table className="table table-sm table-bordered table-hover mt-3 table-mobile-primary table-search animated fadeIn position-relative">
+              <thead className="thead-light">
+                <tr>
+                  <th>
+                    <b>{title}</b>
+                  </th>
+                  <th></th>
+                  <th>
+                    <Link to="/summary/oem-response-details">Details</Link>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <b>OEM</b>
+                  </td>
+                  <td>
+                    <b>PENDING IMEIS</b>
+                  </td>
+                  <td>
+                    <b>RESPONDED IMEIS</b>
+                  </td>
+                </tr>
+                {tableData.length > 0
+                  ? tableData.map((item) => (
+                      <tr key={item.oem}>
+                        <td>{item.oem}</td>
+                        <td>{item.pending_imeis}</td>
+                        <td>{item.responded_imeis}</td>
+                      </tr>
+                    ))
+                  : "No Data Found"}
+              </tbody>
+            </Table>
+          )
+        ) : Object.keys(tableData).length === 0 ? (
+          <Row className="d-flex justify-content-center">
+            <PointSpreadLoading
+              color="#0093c9"
+              speed={1}
+              style={{ width: "0px !important" }}
+            />
+          </Row>
+        ) : (
+          <Table className="table table-sm table-bordered table-hover mt-3 table-mobile-primary table-search animated fadeIn position-relative">
+            <thead className="thead-light">
+              <tr>
+                <th>
+                  <b>{title}</b>
+                </th>
+                <th>
+                  {title === "OEM Logins Brands Summary" && ""}
+                  {title === "User Response Summary" && (
+                    <Link to="/summary/user-response-details">Details</Link>
+                  )}
+                  {title === "Duplication List Summary" && (
+                    <Link to="/summary/duplication-list-details">Details</Link>
+                  )}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableData
+                ? Object.keys(tableData).map((data) =>
+                    Object.keys(tableData[data]).map((item) => (
+                      <tr key={item}>
+                        <td style={{ fontSize: "14", fontStyle: "normal" }}>
+                          {item.includes("_") ? item.replace(/_/g," ").toUpperCase() : item.replace("_"," ").toUpperCase()}
+                        </td>
+                        <td>{tableData[data][item]}</td>
+                      </tr>
+                    ))
+                  )
+                : "No Data Found"}
+            </tbody>
+          </Table>
+        )}
+      </Col>
+    );
+  }
+}
 
-export default HeaderCard;
+export default SummaryDataTable;
