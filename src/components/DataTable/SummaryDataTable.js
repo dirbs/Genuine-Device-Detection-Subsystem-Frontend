@@ -65,7 +65,7 @@ class SummaryDataTable extends Component {
                     <b>RESPONDED IMEIS</b>
                   </td>
                 </tr>
-                {tableData
+                {tableData.length > 0
                   ? tableData.map((item) => (
                       <tr key={item.oem}>
                         <td>{item.oem}</td>
@@ -109,7 +109,7 @@ class SummaryDataTable extends Component {
                     Object.keys(tableData[data]).map((item) => (
                       <tr key={item}>
                         <td style={{ fontSize: "14", fontStyle: "normal" }}>
-                          {item.toUpperCase()}
+                          {item.includes("_") ? item.replace(/_/g," ").toUpperCase() : item.replace("_"," ").toUpperCase()}
                         </td>
                         <td>{tableData[data][item]}</td>
                       </tr>
