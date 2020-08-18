@@ -42,6 +42,7 @@ const HeaderCard = ({ headerData, titleText, bgColor }) => {
             padding: "15px",
             textAlign: "center",
             outline: "none",
+            verticalAlign:"middle"
           }}
         >
           <b className="text text-white"> {titleText && titleText} </b>
