@@ -74,7 +74,7 @@ if (window.location.href.slice(window.location.href.length - 11) === '/deviceinf
 	), document.getElementById('root'));
 }
 else {
-	kc.init({ onLoad: 'login-required' }).success(authenticated => {
+	kc.init({ onLoad: 'login-required',"checkLoginIframe" : false }).success(authenticated => {
 		if (authenticated) {
 			localStorage.setItem('token', kc.token);
 			let tokenDetails = decode(kc.token)
