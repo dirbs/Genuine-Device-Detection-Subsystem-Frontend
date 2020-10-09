@@ -22,141 +22,233 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON A
 CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-import React, { Component } from 'react';
-import { I18n } from 'react-i18next';
-import { Row, Col, Button, Form, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import React, { Component } from "react";
+import { I18n } from "react-i18next";
+import {
+  Row,
+  Col,
+  Button,
+  Form,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+} from "reactstrap";
+import { withFormik, Field } from "formik";
 import i18n from "i18next";
-import RenderModal from '../../components/Form/RenderModal'
-import {withFormik, Field} from 'formik';
-import renderInput from '../../components/Form/RenderInput';
-
+import RenderModal from "../../components/Form/RenderModal";
+import renderInput from "../../components/Form/RenderInput";
+import RenderSelect from "../../components/Form/RenderSelect";
+import doubleEntryInput from "../../components/Form/DoubleEntryInput";
 
 class InfoSubmission extends Component {
-    /**
-     * Close Modal and Reset fields
-     */
-    closeModal() {
-      this.props.closeModal()
-      /**
-       * Reset Formik Fields
-       */
-      this.props.handleReset()
-    }
-  
-    render() {
-      const {
-        handleSubmit,
-        enable,
-        selectedIMEI
-      } = this.props
-      return (
-        <I18n ns="translations">
-          {
-            (t, {i18n}) => (
-              <div>
-                <RenderModal show={enable}>
-                  <ModalHeader>{t('addInfoFor')}: {selectedIMEI}</ModalHeader>
-                  <div className="steps-loading">
-                    <Form onSubmit={handleSubmit}>
-                      <ModalBody>
-                          <Row>
-                          <Col md={12}>
-                            <Field name="serialNumber" component={renderInput} type="text" 
-                                   label={t('serialNumber')} placeholder={t('serialNumber')}/>
-                          </Col>
-                          <Col md={12}>
-                            <Field name="color" component={renderInput} type="text" 
-                                   label={t('color')} placeholder={t('color')}/>
-                          </Col>
-                          <Col md={12}>
-                            <Field name="brand" component={renderInput} type="text" 
-                                   label={t('brand')} placeholder={t('brand')}/>
-                          </Col>
-                          <Col md={12}>
-                            <Field name="modelName" component={renderInput} type="text" 
-                                   label={t('modelName')} placeholder={t('modelName')}/>
-                          </Col>
-                          </Row>
-                      </ModalBody>
-                      <ModalFooter>
-                        <Button className='eq-width' color="secondary" type="button" onClick={() => {
-                          this.closeModal()
-                        }}>{t('modal.close')}</Button>
-                        <Button className='eq-width' color="primary" type="submit">{t('modal.add')}</Button>
-                      </ModalFooter>
-                    </Form>
-                  </div>
-                </RenderModal>
-              </div>
-            )
-          }
-        </I18n>
-      )
-    }
-  }
-  
   /**
-   * Formik HOC
-   * @type {React.ComponentType<any>}
+   * Close Modal and Reset fields
    */
-  export const EnhancedModalForm = withFormik({
-    mapPropsToValues: () => ({
-        serialNumber: '',
-        color: '',
-        brand: '',
-        modelName: ''
-    }),
+  closeModal() {
+    this.props.closeModal();
     /**
-     * Formik validations
-     * @param values
+     * Reset Formik Fields
      */
-    validate: values => {
-      let errors = {}
-      if (values.serialNumber === '') {
-        errors.serialNumber = i18n.t('validation.thisFieldIsRequired')
-      } 
-      else if (/\s/.test(values.serialNumber)) {
-        errors.serialNumber = i18n.t('validation.serialNumberMustContainCharactersAndACombinationOf')
-      } 
-      if (values.color === '') {
-        errors.color = i18n.t('validation.thisFieldIsRequired')
-      } else if (!isNaN(values.color)) {
-        errors.color = i18n.t('validation.cannotBeDigitsOnly')
-      } 
-      if (values.brand === '') {
-        errors.brand = i18n.t('validation.thisFieldIsRequired')
-      } else if (!isNaN(values.brand)) {
-        errors.brand = i18n.t('validation.cannotBeDigitsOnly')
-      } 
-      if (values.modelName === '') {
-        errors.modelName = i18n.t('validation.thisFieldIsRequired')
-      } else if (!isNaN(values.modelName)) {
-        errors.modelName = i18n.t('validation.cannotBeDigitsOnly')
-      } 
+    this.props.handleReset();
+  }
 
-      return errors;
-    },
+  render() {
+    const {
+      handleSubmit,
+      enable,
+      selectedIMEI,
+      values,
+      touched,
+      errors,
+      setFieldValue,
+      setFieldTouched,
+    } = this.props;
+    return (
+      <I18n ns="translations">
+        {(t, { i18n }) => (
+          <div>
+            <RenderModal show={enable}>
+              <ModalHeader>
+                {t("addInfoFor")}: {selectedIMEI}
+              </ModalHeader>
+              <div className="steps-loading">
+                <Form onSubmit={handleSubmit}>
+                  <ModalBody>
+                    <Row>
+                      <Col md={12}>
+                        <Field
+                          name="serialNumber"
+                          component={renderInput}
+                          type="text"
+                          label={t("serialNumber")}
+                          placeholder={t("serialNumber")}
+                        />
+                      </Col>
+                      <Col md={12}>
+                        <Field
+                          name="color"
+                          component={renderInput}
+                          type="text"
+                          label={t("color")}
+                          placeholder={t("color")}
+                        />
+                      </Col>
+                      <Col md={12}>
+                        <Field
+                          name="brand"
+                          component={renderInput}
+                          type="text"
+                          label={t("brand")}
+                          placeholder={t("brand")}
+                        />
+                      </Col>
+                      <Col md={12}>
+                        <Field
+                          name="modelName"
+                          component={renderInput}
+                          type="text"
+                          label={t("modelName")}
+                          placeholder={t("modelName")}
+                        />
+                      </Col>
+                      <Col md={12}>
+                        <Field
+                          name="mac"
+                          component={doubleEntryInput}
+                          label={i18n.t("macWiFiAddress")}
+                          type="text"
+                          placeholder={i18n.t("macWiFiAddress")}
+                          maxLength={23}
+                        />
+                      </Col>
+                      <Col md={12}>
+                        <RenderSelect
+                          value={values.technologies}
+                          onChange={setFieldValue}
+                          options={[
+                            { label: "2G", value: "2G" },
+                            { label: "3G", value: "3G" },
+                            {
+                              label: "4G",
+                              value: "4G",
+                            },
+                            { label: "5G", value: "5G" },
+                          ]}
+                          onBlur={setFieldTouched}
+                          error={errors.technologies}
+                          touched={touched.technologies}
+                          fieldName="technologies"
+                          label={i18n.t("radioAccessTechnologies")}
+                          placeholder={i18n.t("selectTechnologies")}
+                          requiredStar
+                          stayOpen={true}
+                          multi={true}
+                        />
+                      </Col>
+                    </Row>
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button
+                      className="eq-width"
+                      color="secondary"
+                      type="button"
+                      onClick={() => {
+                        this.closeModal();
+                      }}
+                    >
+                      {t("modal.close")}
+                    </Button>
+                    <Button className="eq-width" color="primary" type="submit">
+                      {t("modal.add")}
+                    </Button>
+                  </ModalFooter>
+                </Form>
+              </div>
+            </RenderModal>
+          </div>
+        )}
+      </I18n>
+    );
+  }
+}
+
+/**
+ * Formik HOC
+ * @type {React.ComponentType<any>}
+ */
+export const EnhancedModalForm = withFormik({
+  mapPropsToValues: () => ({
+    serialNumber: "",
+    color: "",
+    brand: "",
+    modelName: "",
+    mac: "",
+    technologies: [],
+  }),
+  /**
+   * Formik validations
+   * @param values
+   */
+  validate: (values) => {
+    console.log(values.selectTechnologies);
+    let errors = {};
+    if (!values.technologies || !values.technologies.length) {
+      errors.technologies = i18n.t("validation.thisFieldIsRequired");
+    }
+    if (values.serialNumber === "") {
+      errors.serialNumber = i18n.t("validation.thisFieldIsRequired");
+    } else if (/\s/.test(values.serialNumber)) {
+      errors.serialNumber = i18n.t(
+        "validation.serialNumberMustContainCharactersAndACombinationOf"
+      );
+    }
+    if (values.color === "") {
+      errors.color = i18n.t("validation.thisFieldIsRequired");
+    } else if (!isNaN(values.color)) {
+      errors.color = i18n.t("validation.cannotBeDigitsOnly");
+    }
+    if (values.brand === "") {
+      errors.brand = i18n.t("validation.thisFieldIsRequired");
+    } else if (!isNaN(values.brand)) {
+      errors.brand = i18n.t("validation.cannotBeDigitsOnly");
+    }
+    if (values.modelName === "") {
+      errors.modelName = i18n.t("validation.thisFieldIsRequired");
+    } else if (!isNaN(values.modelName)) {
+      errors.modelName = i18n.t("validation.cannotBeDigitsOnly");
+    }
+    return errors;
+  },
+  /**
+   * Formik submit function
+   * @param values
+   * @param bag
+   */
+  handleSubmit: (values, bag) => {
+    let data = {
+      oem_imei: bag.props.selectedIMEI,
+      oem_serial_no: values.serialNumber,
+      oem_color: values.color,
+      oem_brand: values.brand,
+      oem_model: values.modelName,
+      mac: values.mac,
+      technologies: values.technologies,
+    };
     /**
-     * Formik submit function
-     * @param values
-     * @param bag
+     * Add single MNO API call
      */
-    handleSubmit: (values, bag) => {
-      let data = {
-        "oem_imei": bag.props.selectedIMEI,
-        "oem_serial_no": values.serialNumber,
-        "oem_color": values.color,
-        "oem_brand": values.brand,
-        "oem_model": values.modelName,
-      }
-      /**
-       * Add single MNO API call
-       */
-      bag.props.addSingleIMEIInfo(data)
-      if (values.serialNumber || values.color || values.brand || values.modelName) {
-        values.serialNumber = values.color = values.brand = values.modelName = '';
-      }
-    },
-    displayName: 'InfoSubmission', // helps with React DevTools
-  })(InfoSubmission);
-  
+    bag.props.addSingleIMEIInfo(data);
+    if (
+      values.serialNumber ||
+      values.color ||
+      values.brand ||
+      values.modelName ||
+      values.mac ||
+      values.technologies
+    ) {
+      values.serialNumber = values.color = values.brand = values.modelName = values.mac = values.technologies =
+        "";
+    }
+  },
+  displayName: "InfoSubmission", // helps with React DevTools
+})(InfoSubmission);

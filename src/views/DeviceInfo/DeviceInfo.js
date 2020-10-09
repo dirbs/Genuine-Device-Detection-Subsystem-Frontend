@@ -29,6 +29,7 @@ import i18n from "i18next";
 import doubleEntryInput from '../../components/Form/DoubleEntryInput'
 import { withFormik, Field, FieldArray } from 'formik';
 import renderInput from '../../components/Form/RenderInput';
+import RenderSelect from '../../components/Form/RenderSelect';
 import { singlePublicInfoSubmission } from './../../actions/oemActions'
 import { connect } from "react-redux";
 
@@ -51,7 +52,9 @@ class DeviceInfo extends Component {
       values,
       touched,
       errors,
-      handleSubmit
+      handleSubmit,
+      setFieldValue,
+      setFieldTouched
     } = this.props
     return (
       <I18n ns="translations">
@@ -152,6 +155,40 @@ class DeviceInfo extends Component {
                           <Field name="modelName" component={renderInput} type="text"
                             label={t('modelName')} placeholder={t('modelName')} />
                         </Col>
+                        <Col md={6}>
+                        <Field
+                          name="mac"
+                          component={doubleEntryInput}
+                          label={i18n.t("macWiFiAddress")}
+                          type="text"
+                          placeholder={i18n.t("macWiFiAddress")}
+                          maxLength={23}
+                        />
+                      </Col>
+                      <Col md={6}>
+                        <RenderSelect
+                          value={values.technologies}
+                          onChange={setFieldValue}
+                          options={[
+                            { label: "2G", value: "2G" },
+                            { label: "3G", value: "3G" },
+                            {
+                              label: "4G",
+                              value: "4G",
+                            },
+                            { label: "5G", value: "5G" },
+                          ]}
+                          onBlur={setFieldTouched}
+                          error={errors.technologies}
+                          touched={touched.technologies}
+                          fieldName="technologies"
+                          label={i18n.t("radioAccessTechnologies")}
+                          placeholder={i18n.t("selectTechnologies")}
+                          requiredStar
+                          stayOpen={true}
+                          multi={true}
+                        />
+                      </Col>
                       </Row>
                       <Button className='btn btn-primary float-right' color="primary" type="submit">{t('submit')}</Button>
                     </CardBody>
@@ -176,7 +213,9 @@ class DeviceInfo extends Component {
     serialNumber: '',
     color: '',
     brand: '',
-    modelName: ''
+    modelName: '',
+    mac: "",
+    technologies: [],
   }),
   /**
    * Formik validations
@@ -243,6 +282,9 @@ class DeviceInfo extends Component {
     } else if (!isNaN(values.modelName)) {
       errors.modelName = i18n.t('validation.cannotBeDigitsOnly')
     }
+    if (!values.technologies || !values.technologies.length) {
+      errors.technologies = i18n.t("validation.thisFieldIsRequired");
+    }
 
     return errors;
   },
@@ -258,6 +300,8 @@ class DeviceInfo extends Component {
       "user_color": values.color,
       "user_brand": values.brand,
       "user_model": values.modelName,
+      "mac": values.mac,
+      "technologies": values.technologies,
     }
     data.user_imeis = [];
     for (let i = 0; i < values.imei.length; i++) {
@@ -267,8 +311,8 @@ class DeviceInfo extends Component {
      * Add single MNO API call
      */
     bag.props.singlePublicInfoSubmission(data)
-    if (values.serialNumber || values.color || values.brand || values.modelName || values.uid || values.imei !== []) {
-      values.serialNumber = values.color = values.brand = values.modelName = values.uid = '';
+    if (values.serialNumber || values.color || values.brand || values.modelName || values.uid || values.mac || values.technologies ||values.imei !== []) {
+      values.serialNumber = values.color = values.brand = values.modelName = values.uid = values.mac = values.technologies = '';
       values.imei = [{ imei: '', reImei: '' }];
     }
   },
