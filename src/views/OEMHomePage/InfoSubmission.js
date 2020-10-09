@@ -82,7 +82,8 @@ class InfoSubmission extends Component {
                           type="text"
                           label={t("serialNumber")}
                           placeholder={t("serialNumber")}
-                        />
+                          requiredStar
+/>
                       </Col>
                       <Col md={12}>
                         <Field
@@ -91,6 +92,8 @@ class InfoSubmission extends Component {
                           type="text"
                           label={t("color")}
                           placeholder={t("color")}
+                          requiredStar
+
                         />
                       </Col>
                       <Col md={12}>
@@ -100,6 +103,7 @@ class InfoSubmission extends Component {
                           type="text"
                           label={t("brand")}
                           placeholder={t("brand")}
+                          requiredStar
                         />
                       </Col>
                       <Col md={12}>
@@ -109,6 +113,7 @@ class InfoSubmission extends Component {
                           type="text"
                           label={t("modelName")}
                           placeholder={t("modelName")}
+                          requiredStar
                         />
                       </Col>
                       <Col md={12}>

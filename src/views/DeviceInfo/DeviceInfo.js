@@ -137,23 +137,23 @@ class DeviceInfo extends Component {
                       <Row>
                         <Col md={6}>
                           <Field name="uid" component={renderInput} type="text"
-                            label={t('UID')} placeholder={t('UID')} />
+                            label={t('UID')} placeholder={t('UID')}  requiredStar/>
                         </Col>
                         <Col md={6}>
                           <Field name="serialNumber" component={renderInput} type="text"
-                            label={t('serialNumber')} placeholder={t('serialNumber')} />
+                            label={t('serialNumber')} placeholder={t('serialNumber')} requiredStar />
                         </Col>
                         <Col md={6}>
                           <Field name="color" component={renderInput} type="text"
-                            label={t('color')} placeholder={t('color')} />
+                            label={t('color')} placeholder={t('color')}  requiredStar/>
                         </Col>
                         <Col md={6}>
                           <Field name="brand" component={renderInput} type="text"
-                            label={t('brand')} placeholder={t('brand')} />
+                            label={t('brand')} placeholder={t('brand')} requiredStar />
                         </Col>
                         <Col md={6}>
                           <Field name="modelName" component={renderInput} type="text"
-                            label={t('modelName')} placeholder={t('modelName')} />
+                            label={t('modelName')} placeholder={t('modelName')} requiredStar />
                         </Col>
                         <Col md={6}>
                         <Field
