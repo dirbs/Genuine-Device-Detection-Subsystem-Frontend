@@ -215,7 +215,7 @@ class DeviceInfo extends Component {
     brand: '',
     modelName: '',
     mac: "",
-    technologies: [],
+    technologies: "",
   }),
   /**
    * Formik validations
@@ -294,6 +294,10 @@ class DeviceInfo extends Component {
    * @param bag
    */
   handleSubmit: (values, bag) => {
+    //Give Array values.technologies we convert to string for API
+    let technologies= values.technologies.map(item=>{
+      return item.value
+   })
     let data = {
       "uid": values.uid,
       "user_serial_no": values.serialNumber,
@@ -301,7 +305,7 @@ class DeviceInfo extends Component {
       "user_brand": values.brand,
       "user_model": values.modelName,
       "mac": values.mac,
-      "technologies": values.technologies,
+      "oem_rat": technologies.join(),
     }
     data.user_imeis = [];
     for (let i = 0; i < values.imei.length; i++) {
@@ -311,7 +315,7 @@ class DeviceInfo extends Component {
      * Add single MNO API call
      */
     bag.props.singlePublicInfoSubmission(data)
-    if (values.serialNumber || values.color || values.brand || values.modelName || values.uid || values.mac || values.technologies ||values.imei !== []) {
+    if (values.serialNumber || values.color || values.brand || values.modelName || values.uid || values.mac || values.technologies || values.imei !== []) {
       values.serialNumber = values.color = values.brand = values.modelName = values.uid = values.mac = values.technologies = '';
       values.imei = [{ imei: '', reImei: '' }];
     }

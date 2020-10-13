@@ -188,14 +188,13 @@ export const EnhancedModalForm = withFormik({
     brand: "",
     modelName: "",
     mac: "",
-    technologies: [],
+    technologies: "",
   }),
   /**
    * Formik validations
    * @param values
    */
   validate: (values) => {
-    console.log(values.selectTechnologies);
     let errors = {};
     if (!values.technologies || !values.technologies.length) {
       errors.technologies = i18n.t("validation.thisFieldIsRequired");
@@ -230,6 +229,10 @@ export const EnhancedModalForm = withFormik({
    * @param bag
    */
   handleSubmit: (values, bag) => {
+    //Give Array values.technologies we convert to string for API
+    let technologies= values.technologies.map(item=>{
+       return item.value
+    })
     let data = {
       oem_imei: bag.props.selectedIMEI,
       oem_serial_no: values.serialNumber,
@@ -237,7 +240,7 @@ export const EnhancedModalForm = withFormik({
       oem_brand: values.brand,
       oem_model: values.modelName,
       mac: values.mac,
-      technologies: values.technologies,
+      oem_rat: technologies.join(),
     };
     /**
      * Add single MNO API call
