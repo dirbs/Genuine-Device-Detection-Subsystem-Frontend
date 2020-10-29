@@ -173,6 +173,7 @@ class OEMHomePage extends Component {
                             <li>{i18n.t('serialNumber')}</li>
                               <li>{i18n.t('color')}</li>
                               <li>{i18n.t('brand')}</li>
+                              <li>{i18n.t('modelName')}</li>
                               <li>{i18n.t("macAddress")}</li>
                               <li>{i18n.t("radioAccessTechnologies")}</li>
                           </ul>
